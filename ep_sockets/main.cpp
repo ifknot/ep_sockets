@@ -17,18 +17,18 @@ int main() {
     std::string THINKPAD = "192.168.1.225";
     std::string NEO4 = "192.168.1.182";
 
-/*
+
     std::cout << "udp client" << std::endl;
     net::udp_client_socket c{HPZ600, net::DEFAULT_PORT};
     c.write(" Hello from client " + name);
     std::cout << c.read() << std::endl;
-*/
 
+/*
     std::cout << "udp server" << std::endl;
     net::udp_server_socket s{HPZ620, net::DEFAULT_PORT};
     std::cout << s.read_from() << std::endl;
     s.write_back("Hello from server " + name);
-
+*/
 /*
     std::cout << "tcp server" << std::endl;
     net::tcp_server_socket s(NEO4, net::DEFAULT_PORT);
@@ -45,7 +45,13 @@ int main() {
     std::cout << c.read() << std::endl;
 */
 
+    std::cout << "Any Key to Continue";
+    std::cin.ignore();
+
 #ifdef WIN32
     net::cleanup();
 #endif
+
+    return 0;
+
 }

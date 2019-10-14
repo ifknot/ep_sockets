@@ -3,7 +3,10 @@ CONFIG += console c++17
 CONFIG -= app_bundle
 CONFIG -= qt
 
-LIBS += -lws2_32 #There are no porting issues with the socket library - implementation is in a file called ws2_32.dll and there are 32-bit and 64-bit versions of the DLL in 64-bit Windows
+#There are no porting issues with the socket library - implementation is in a file called ws2_32.dll and there are 32-bit and 64-bit versions of the DLL in 64-bit Windows
+win32 {
+    LIBS += -lws2_32
+}
 
 SOURCES += \
         linux_socket.cpp \
