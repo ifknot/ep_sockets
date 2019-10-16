@@ -3,13 +3,20 @@
 
 #ifdef WIN32
 
+#include <cstdint>
+
 #include "winsock2.h"
 
 #define NS_INADDRSZ  4
 #define NS_IN6ADDRSZ 16
 #define NS_INT16SZ   2
 
-
+/**
+ * @brief inet_pton4
+ * @param src
+ * @param dst
+ * @return
+ */
 int inet_pton4(const char *src, char *dst) {
     uint8_t tmp[NS_INADDRSZ], *tp;
 
@@ -20,7 +27,7 @@ int inet_pton4(const char *src, char *dst) {
     int ch;
     while ((ch = *src++) != '\0') {
         if (ch >= '0' && ch <= '9') {
-            uint32_t n = *tp * 10 + (ch - '0');
+            uint32_t n = static_cast<uint32_t>(*tp * 10 + (ch - '0'));
 
             if (saw_digit && *tp == 0)
                 return 0;
@@ -28,7 +35,7 @@ int inet_pton4(const char *src, char *dst) {
             if (n > 255)
                 return 0;
 
-            *tp = n;
+            *tp = static_cast<uint8_t>(n);
             if (!saw_digit) {
                 if (++octets > 4)
                     return 0;
@@ -52,13 +59,19 @@ int inet_pton4(const char *src, char *dst) {
     return 1;
 }
 
+/**
+ * @brief inet_pton6
+ * @param src
+ * @param dst
+ * @return
+ */
 int inet_pton6(const char *src, char *dst) {
     static const char xdigits[] = "0123456789abcdef";
     uint8_t tmp[NS_IN6ADDRSZ];
 
-    uint8_t *tp = (uint8_t*) memset(tmp, '\0', NS_IN6ADDRSZ);
+    uint8_t *tp = static_cast<uint8_t*>(memset(tmp, '\0', NS_IN6ADDRSZ));
     uint8_t *endp = tp + NS_IN6ADDRSZ;
-    uint8_t *colonp = NULL;
+    uint8_t *colonp = nullptr;
 
     /* Leading :: requires some special handling. */
     if (*src == ':') {
@@ -72,7 +85,7 @@ int inet_pton6(const char *src, char *dst) {
     int ch;
     while ((ch = tolower(*src++)) != '\0') {
         const char *pch = strchr(xdigits, ch);
-        if (pch != NULL) {
+        if (pch != nullptr) {
             val <<= 4;
             val |= (pch - xdigits);
             if (val > 0xffff)
@@ -93,13 +106,13 @@ int inet_pton6(const char *src, char *dst) {
             }
             if (tp + NS_INT16SZ > endp)
                 return 0;
-            *tp++ = (uint8_t) (val >> 8) & 0xff;
-            *tp++ = (uint8_t) val & 0xff;
+            *tp++ = static_cast<uint8_t>((val >> 8) & 0xff);
+            *tp++ = static_cast<uint8_t>(val & 0xff);
             saw_xdigit = 0;
             val = 0;
             continue;
         }
-        if (ch == '.' && ((tp + NS_INADDRSZ) <= endp) && inet_pton4(curtok, (char*) tp) > 0) {
+        if (ch == '.' && ((tp + NS_INADDRSZ) <= endp) && inet_pton4(curtok, reinterpret_cast<char*>(tp)) > 0) {
             tp += NS_INADDRSZ;
             saw_xdigit = 0;
             break; /* '\0' was seen by inet_pton4(). */
@@ -109,15 +122,15 @@ int inet_pton6(const char *src, char *dst) {
     if (saw_xdigit) {
         if (tp + NS_INT16SZ > endp)
             return 0;
-        *tp++ = (uint8_t) (val >> 8) & 0xff;
-        *tp++ = (uint8_t) val & 0xff;
+        *tp++ = static_cast<uint8_t>((val >> 8) & 0xff);
+        *tp++ = static_cast<uint8_t>(val & 0xff);
     }
-    if (colonp != NULL) {
+    if (colonp != nullptr) {
         /*
          * Since some memmove()'s erroneously fail to handle
          * overlapping regions, we'll do the shift by hand.
          */
-        const int n = tp - colonp;
+        const int n = static_cast<int>(tp - colonp);
 
         if (tp == endp)
             return 0;

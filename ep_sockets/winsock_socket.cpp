@@ -27,7 +27,7 @@ namespace net {
 
     int base_socket::_assign_address(const std::string &address, const unsigned short port) {
         //using sockaddr_in makes assigning the address easier but must then reinterpret cast to sockaddr for winsock functions
-        _addr.sin_family = static_cast<unsigned short>(_address_family);
+        _addr.sin_family = static_cast<short>(_address_family);
 		_addr.sin_port = htons(port);
 #ifdef __MINGW32__
         return inet_pton(_address_family, address.c_str(), reinterpret_cast <char*>(&(_addr.sin_addr)));

@@ -9,8 +9,8 @@ int main() {
     net::startup();
 #endif
 
-    std::string name(' ', 256);
-    gethostname(&name[0], name.size());
+    std::string name(64, ' ');
+    gethostname(&name[0], static_cast<int>(name.size()));
     std::cout << name << std::endl;
     std::string HPZ600 = "192.168.1.201";
     std::string HPZ620 = "192.168.1.237";

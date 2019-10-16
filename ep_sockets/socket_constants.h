@@ -5,7 +5,7 @@
 
 namespace net {
 
-    //multi_socket template behaviout selectors
+    //multi_socket template behaviour selectors
     enum class protocol_t {ANY, TCP, UDP, ICMP, IGMP, RFCOMM, ICMPv6, PGM};
     enum class role_t {client, server, active};
     enum class family_t {IPv4, IPv6, IrDA, Bluetooth};

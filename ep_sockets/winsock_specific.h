@@ -6,8 +6,8 @@
 #include <string>
 #include <sstream>
 
-#include <WinSock2.h>
-#include <WS2tcpip.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 
 namespace net {
 
